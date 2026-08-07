@@ -846,6 +846,8 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.settings.APP_OPEN_BY_DEFAULT_SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="package" />
             </intent-filter>
             <meta-data android:name="com.android.car.settings.SINGLE_PANE" android:value="true"/>
             <meta-data android:name="distractionOptimized" android:value="true"/>

@@ -16,9 +16,16 @@
 
 package com.android.car.settings.applications.managedomainurls;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.provider.Settings;
+
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 
+import com.android.car.settings.Flags;
 import com.android.car.settings.common.BaseCarSettingsActivity;
 
 /**
@@ -31,6 +38,38 @@ public class ManageDomainUrlsActivity extends BaseCarSettingsActivity {
     @Nullable
     @Override
     protected Fragment getInitialFragment() {
+        String packageName = getPackageNameFromIntent(getIntent());
+        if (packageName != null && isInstalledPackage(packageName)) {
+            return Flags.newFragmentForIntents()
+                    ? ApplicationLaunchSettingsFragmentUpdated.newInstance(packageName)
+                    : ApplicationLaunchSettingsFragment.newInstance(packageName);
+        }
         return new ManageDomainUrlsFragment();
+    }
+
+    @Nullable
+    @VisibleForTesting
+    static String getPackageNameFromIntent(Intent intent) {
+        if (intent == null || !Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS.equals(
+                intent.getAction())) {
+            return null;
+        }
+
+        Uri data = intent.getData();
+        if (data == null || !"package".equals(data.getScheme())) {
+            return null;
+        }
+
+        String packageName = data.getSchemeSpecificPart();
+        return packageName == null || packageName.isEmpty() ? null : packageName;
+    }
+
+    private boolean isInstalledPackage(String packageName) {
+        try {
+            getPackageManager().getApplicationInfo(packageName, /* flags= */ 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }
