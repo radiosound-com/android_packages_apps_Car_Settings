@@ -471,6 +471,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="package" />
             </intent-filter>
+            <intent-filter android:priority="200">
+                <action android:name="android.settings.MANAGE_UNKNOWN_APP_SOURCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <meta-data android:name="distractionOptimized" android:value="true"/>
         </activity>
 
@@ -1176,10 +1180,6 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.settings.MANAGE_DEFAULT_APPS_SETTINGS" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.settings.MANAGE_UNKNOWN_APP_SOURCES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
