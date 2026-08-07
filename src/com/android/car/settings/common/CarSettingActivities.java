@@ -37,6 +37,7 @@ import com.android.car.settings.applications.appinfo.AppAspectRatioFragment;
 import com.android.car.settings.applications.assist.AssistantAndVoiceFragment;
 import com.android.car.settings.applications.defaultapps.DefaultAutofillPickerFragment;
 import com.android.car.settings.applications.specialaccess.AlarmsAndReminderFragment;
+import com.android.car.settings.applications.specialaccess.InstallUnknownAppsFragment;
 import com.android.car.settings.applications.specialaccess.ModifySystemSettingsFragment;
 import com.android.car.settings.applications.specialaccess.NotificationAccessFragment;
 import com.android.car.settings.applications.specialaccess.PremiumSmsAccessFragment;
@@ -390,6 +391,19 @@ public class CarSettingActivities {
         @Override
         protected Fragment getInitialFragment() {
             return new SpecialAccessSettingsFragment();
+        }
+    }
+
+    /**
+     * Install-unknown-apps access activity. Android sends this intent when an installer
+     * requests the per-source permission; expose the existing Car Settings app-op page instead
+     * of routing the request to the unsupported-intent toast.
+     */
+    public static class InstallUnknownAppsActivity extends BaseCarSettingsActivity {
+        @Nullable
+        @Override
+        protected Fragment getInitialFragment() {
+            return new InstallUnknownAppsFragment();
         }
     }
 
