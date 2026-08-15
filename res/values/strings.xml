@@ -981,6 +981,12 @@
 
     <!-- Label for screen where user can grant applications special access to various systems. [CHAR_LIMIT=60] -->
     <string name="special_access">Special app access</string>
+    <!-- Title for managing applications that can install APK packages. [CHAR_LIMIT=40] -->
+    <string name="install_unknown_apps_title">Install unknown apps</string>
+    <!-- Description for the install-source special access entry. [CHAR_LIMIT=NONE] -->
+    <string name="install_unknown_apps_summary">Allow an app to install APKs from outside trusted stores.</string>
+    <!-- Description shown above the per-app install-source list. [CHAR_LIMIT=NONE] -->
+    <string name="install_unknown_apps_description">Apps with this access can install APK files from outside trusted stores. Only enable it for sources you trust.</string>
     <!-- Text for toggle button to control whether system processes are shown in app lists. [CHAR_LIMIT=30] -->
     <string name="show_system">Show system</string>
     <!-- Text for toggle button to control whether system processes are hidden in app lists. [CHAR_LIMIT=30] -->

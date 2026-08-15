@@ -53,6 +53,12 @@
         android:title="@string/wifi_control_title"
         settings:controller="com.android.car.settings.common.DefaultRestrictionsPreferenceController"/>
     <Preference
+        android:fragment="com.android.car.settings.applications.specialaccess.InstallUnknownAppsFragment"
+        android:key="@string/pk_install_unknown_apps_entry"
+        android:title="@string/install_unknown_apps_title"
+        android:summary="@string/install_unknown_apps_summary"
+        settings:controller="com.android.car.settings.common.DefaultRestrictionsPreferenceController"/>
+    <Preference
         android:key="@string/pk_more_special_access"
         android:title="@string/more_special_access_title"
         settings:controller="com.android.car.settings.applications.specialaccess.MoreSpecialAccessPreferenceController"/>
