@@ -100,7 +100,7 @@ public class LegacyVolumeSliderTest {
         mSlider.onNotifyChange(volumeIntent());
 
         verify(mCarAudioManager).setGroupVolume(eq(PRIMARY_AUDIO_ZONE), eq(MEDIA_GROUP),
-                eq(12), anyInt());
+                eq(12), eq(0));
     }
 
     @Test
@@ -131,7 +131,8 @@ public class LegacyVolumeSliderTest {
         mSlider.onNotifyChange(volumeIntent());
 
         verify(mCarAudioManager).getGroupVolume(3, MEDIA_GROUP);
-        verify(mCarAudioManager).setGroupVolume(eq(3), eq(MEDIA_GROUP), eq(12), anyInt());
+        verify(mCarAudioManager).setGroupVolume(3, MEDIA_GROUP, 12,
+                BaseVolumeSlider.QC_VOLUME_SELF_CHANGE);
     }
 
     @Test
