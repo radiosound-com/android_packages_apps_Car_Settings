@@ -15,6 +15,8 @@
  */
 package com.android.car.settings.sound.audiorouting;
 
+import static android.car.media.CarAudioManager.AUDIO_FEATURE_DYNAMIC_ROUTING;
+
 import android.car.drivingstate.CarUxRestrictions;
 import android.car.media.CarAudioManager;
 import android.content.Context;
@@ -52,6 +54,16 @@ public class AudioRouteController extends PreferenceController<Preference> {
                 .getCarAudioManager();
         mAudioZone = ((CarSettingsApplication) context.getApplicationContext()).getMyAudioZoneId();
         mMediaUsage = context.getResources().getInteger(R.integer.audio_route_selector_usage);
+    }
+
+    @Override
+    protected int getDefaultAvailabilityStatus() {
+        // Legacy routing has no per-zone output device. Querying one throws an
+        // IllegalStateException when the Sound screen refreshes this preference.
+        if (!mCarAudioManager.isAudioFeatureEnabled(AUDIO_FEATURE_DYNAMIC_ROUTING)) {
+            return UNSUPPORTED_ON_DEVICE;
+        }
+        return AVAILABLE;
     }
 
     @Override
