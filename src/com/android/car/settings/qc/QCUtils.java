@@ -16,6 +16,10 @@
 
 package com.android.car.settings.qc;
 
+import static android.car.media.CarAudioManager.AUDIO_FEATURE_DYNAMIC_ROUTING;
+import static android.car.media.CarAudioManager.INVALID_AUDIO_ZONE;
+import static android.car.media.CarAudioManager.PRIMARY_AUDIO_ZONE;
+
 import static com.android.car.settings.common.PreferenceXmlParser.METADATA_KEY;
 import static com.android.car.settings.common.PreferenceXmlParser.METADATA_OCCUPANT_ZONE;
 import static com.android.car.settings.common.PreferenceXmlParser.PREF_AVAILABILITY_STATUS_WRITE;
@@ -26,6 +30,7 @@ import android.annotation.XmlRes;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.car.CarOccupantZoneManager;
+import android.car.media.CarAudioManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +50,21 @@ import java.util.List;
  */
 public class QCUtils {
     private QCUtils() {
+    }
+
+    /** Resolves the zone used for volume controls and their change callbacks. */
+    static int getAudioZoneId(Context context) {
+        CarSettingsApplication application =
+                (CarSettingsApplication) context.getApplicationContext();
+        int zoneId = application.getMyAudioZoneId();
+        CarAudioManager audioManager = application.getCarAudioManager();
+        // Legacy routing has no occupant-to-audio-zone mapping. Its stream volume
+        // controls and volume callbacks use the primary audio zone.
+        if (zoneId == INVALID_AUDIO_ZONE && audioManager != null
+                && !audioManager.isAudioFeatureEnabled(AUDIO_FEATURE_DYNAMIC_ROUTING)) {
+            return PRIMARY_AUDIO_ZONE;
+        }
+        return zoneId;
     }
 
     /**

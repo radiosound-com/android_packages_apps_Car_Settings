@@ -17,6 +17,7 @@
 package com.android.car.settings.qc;
 
 import static android.car.media.CarAudioManager.AUDIO_FEATURE_VOLUME_GROUP_MUTING;
+import static android.car.media.CarAudioManager.INVALID_VOLUME_GROUP_ID;
 
 import static com.android.car.qc.QCItem.QC_ACTION_SLIDER_VALUE;
 import static com.android.car.settings.qc.QCUtils.getActionDisabledDialogIntent;
@@ -96,6 +97,9 @@ public abstract class BaseVolumeSlider extends SettingsQCItem {
         for (int usage : getUsages()) {
             VolumeItemParser.VolumeItem volumeItem = mVolumeItems.get(usage);
             int groupId = carAudioManager.getVolumeGroupIdForUsage(zoneId, usage);
+            if (groupId == INVALID_VOLUME_GROUP_ID) {
+                continue;
+            }
             int min = carAudioManager.getGroupMinVolume(zoneId, groupId);
             int max = carAudioManager.getGroupMaxVolume(zoneId, groupId);
             int value = carAudioManager.getGroupVolume(zoneId, groupId);
@@ -122,7 +126,8 @@ public abstract class BaseVolumeSlider extends SettingsQCItem {
                     .build()
             );
         }
-        return listBuilder.build();
+        QCList list = listBuilder.build();
+        return list.getRows().isEmpty() ? null : list;
     }
 
     @Override
@@ -168,8 +173,7 @@ public abstract class BaseVolumeSlider extends SettingsQCItem {
     }
 
     private int getMyAudioZoneId() {
-        return ((CarSettingsApplication) mContext.getApplicationContext())
-                .getMyAudioZoneId();
+        return QCUtils.getAudioZoneId(mContext);
     }
 
     private CarAudioManager getCarAudioManager() {
