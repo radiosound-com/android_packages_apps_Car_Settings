@@ -109,8 +109,7 @@ public abstract class BaseVolumeSliderWorker<E extends BaseVolumeSlider>
     }
 
     private int getMyAudioZoneId() {
-        return ((CarSettingsApplication) mContext.getApplicationContext())
-                .getMyAudioZoneId();
+        return QCUtils.getAudioZoneId(mContext);
     }
 
     private CarAudioManager getCarAudioManager() {

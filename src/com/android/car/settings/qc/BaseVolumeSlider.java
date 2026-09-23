@@ -16,7 +16,9 @@
 
 package com.android.car.settings.qc;
 
+import static android.car.media.CarAudioManager.AUDIO_FEATURE_DYNAMIC_ROUTING;
 import static android.car.media.CarAudioManager.AUDIO_FEATURE_VOLUME_GROUP_MUTING;
+import static android.car.media.CarAudioManager.INVALID_VOLUME_GROUP_ID;
 
 import static com.android.car.qc.QCItem.QC_ACTION_SLIDER_VALUE;
 import static com.android.car.settings.qc.QCUtils.getActionDisabledDialogIntent;
@@ -96,6 +98,9 @@ public abstract class BaseVolumeSlider extends SettingsQCItem {
         for (int usage : getUsages()) {
             VolumeItemParser.VolumeItem volumeItem = mVolumeItems.get(usage);
             int groupId = carAudioManager.getVolumeGroupIdForUsage(zoneId, usage);
+            if (groupId == INVALID_VOLUME_GROUP_ID) {
+                continue;
+            }
             int min = carAudioManager.getGroupMinVolume(zoneId, groupId);
             int max = carAudioManager.getGroupMaxVolume(zoneId, groupId);
             int value = carAudioManager.getGroupVolume(zoneId, groupId);
@@ -122,7 +127,8 @@ public abstract class BaseVolumeSlider extends SettingsQCItem {
                     .build()
             );
         }
-        return listBuilder.build();
+        QCList list = listBuilder.build();
+        return list.getRows().isEmpty() ? null : list;
     }
 
     @Override
@@ -156,8 +162,11 @@ public abstract class BaseVolumeSlider extends SettingsQCItem {
             return;
         }
         try {
-            carAudioManager.setGroupVolume(zoneId, volumeGroupId, newVolume,
-                    QC_VOLUME_SELF_CHANGE);
+            // Legacy routing forwards flags to AudioManager. The QC callback marker
+            // overlaps its absolute-volume flags, which reject changes on local outputs.
+            int flags = carAudioManager.isAudioFeatureEnabled(AUDIO_FEATURE_DYNAMIC_ROUTING)
+                    ? QC_VOLUME_SELF_CHANGE : 0;
+            carAudioManager.setGroupVolume(zoneId, volumeGroupId, newVolume, flags);
         } catch (CarNotConnectedException e) {
             LOG.w("Ignoring volume change event because the car isn't connected", e);
         }
@@ -168,8 +177,7 @@ public abstract class BaseVolumeSlider extends SettingsQCItem {
     }
 
     private int getMyAudioZoneId() {
-        return ((CarSettingsApplication) mContext.getApplicationContext())
-                .getMyAudioZoneId();
+        return QCUtils.getAudioZoneId(mContext);
     }
 
     private CarAudioManager getCarAudioManager() {
